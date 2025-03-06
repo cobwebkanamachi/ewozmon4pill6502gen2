@@ -35,7 +35,10 @@ Bluepill
 Stlink(clone) to programming Bluepill.
 FT232RL(red) to communicate uart of bluepill.
 teraterm
-
+ca65, ld65 are on Searle's zip( run on cmd.exe )
+bin2hex is problematic. if you assemble osi_bas.s, you would get .bin, but bin2hex needed.
+I got this https://github.com/krupski/bin2hex.git
+git clone it, then make and use it.
 You should do copy osi_bas.hex to ROM.HEX of pill6502gen2 then make clean and make to run osi_bas.hex. 
   
 Sorry, no warranty.  
