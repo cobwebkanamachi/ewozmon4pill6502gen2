@@ -3,6 +3,8 @@
 This repo is clone of https://gist.github.com/b529a24f39bcbd53f1e21775e24d0b9e.git.
 And also an implement for pill6502gen2 branch bellow.
 https://github.com/cobwebkanamachi/pill_6502/tree/pio-and-uartbased-mod/new-src
+And osi_bas is Grant Searle's bellow.
+http://searle.x10host.com/6502/osi_bas.zip on http://searle.x10host.com/6502/Simple6502.html .
 
 1. concept
 I think it is available to implement the wozmon on ROM.HEX of Grant Searle's osi_bas and handler.
@@ -27,5 +29,12 @@ There's no explain for my code:-).
 Only the codes tell about it.
 osi_bas.s includes all(ewoz and msbasic and handler and vectors(6bytes)) for pill6502gen2(for uart).
 
-Sorry, no warranty.
+Notice:
+Running environment is bellow.
+Bluepill
+Stlink(clone) to programming Bluepill.
+FT232RL(red) to communicate uart of bluepill.
+teraterm
+  
+Sorry, no warranty.  
 Enjoy!
