@@ -26,5 +26,6 @@ Dirty Kludge. So change as you like freely.
 There's no explain for my code:-).
 Only the codes tell about it.
 osi_bas.s includes all(ewoz and msbasic and handler and vectors(6bytes)) for pill6502gen2(for uart).
-  
+
+Sorry, no warranty.
 Enjoy!
