@@ -40,6 +40,20 @@ bin2hex is problematic. if you assemble osi_bas.s, you would get .bin, but bin2h
 I got this https://github.com/krupski/bin2hex.git
 git clone it, then make and use it.
 You should do copy osi_bas.hex to ROM.HEX of pill6502gen2 then make clean and make to run osi_bas.hex. 
-  
+**IMPORTANT**
+My Bluepill's cpu is **NOT** STM32, but GD32(RISC-V: cpuid is 410).
+Page alignment is critical for Risc-V(GD32) and 6502 either.
+If we wrote to flash(emulated EEPROM), then if not changed behavior or memory image, you should erase flash several times.
+No need for care of flash image size, but if wrote code is not reveal run, that is perhaps erase needed.
+And if you anoyed with page align, you could start with Searle's ZIP again. That works!!!
+I could not get properly explain Page alignment would affect on 6502 on bluepill yet.
+Only I found today that Zephyr project made some warning on page alignment of GD32.
+https://docs.zephyrproject.org/latest/build/dts/api/bindings/mtd/gd%2Cgd32-nv-flash-v2.html
+>erase-block-size
+>int
+>address alignment required by flash erase operations write-block-size
+>int
+>address alignment required by flash write operations
+
 Sorry, no warranty.  
 Enjoy!
