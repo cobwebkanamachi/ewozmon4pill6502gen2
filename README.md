@@ -35,6 +35,8 @@ Bluepill
 Stlink(clone) to programming Bluepill.
 FT232RL(red) to communicate uart of bluepill.
 teraterm
+
+You should do copy osi_bas.hex to ROM.HEX of pill6502gen2 then make clean and make to run osi_bas.hex. 
   
 Sorry, no warranty.  
 Enjoy!
