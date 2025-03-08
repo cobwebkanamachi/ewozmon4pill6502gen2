@@ -63,7 +63,10 @@ if wrote FF, it is normal, if not wrote FF, that is problem.
 i do not know how to mitigate this.
 garbage collection, or some kind of bug bites.
 
-But this works:-)</PRE>
+But this works:-)
+Please paste bellow to EWOZ.
+3000: A9 20 AA 20 06 E0  E8 8A C9 7F D0 F6 4C 00 FF
+then 3000 R</PRE>
 <img src="https://github.com/cobwebkanamachi/ewozmon4pill6502gen2/blob/main/works.png">
 <PRE>Sorry, no warranty.  
 Enjoy!</PRE>
