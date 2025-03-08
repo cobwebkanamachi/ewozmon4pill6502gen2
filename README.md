@@ -63,7 +63,7 @@ if wrote FF, it is normal, if not wrote FF, that is problem.
 i do not know how to mitigate this.
 garbage collection, or some kind of bug bites.
 
-But this works:-)
-
-Sorry, no warranty.  
-Enjoy!
+But this works:-)</PRE>
+<img src="https://github.com/cobwebkanamachi/ewozmon4pill6502gen2/blob/main/works.png">
+<PRE>Sorry, no warranty.  
+Enjoy!</PRE>
