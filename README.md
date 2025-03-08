@@ -29,7 +29,7 @@ There's no explain for my code:-).
 Only the codes tell about it.
 osi_bas.s includes all(ewoz and msbasic and handler and vectors(6bytes)) for pill6502gen2(for uart).
 
-Notice:
+5. notices
 Running environment is bellow.
 Bluepill
 Stlink(clone) to programming Bluepill.
@@ -54,6 +54,16 @@ https://docs.zephyrproject.org/latest/build/dts/api/bindings/mtd/gd%2Cgd32-nv-fl
 >address alignment required by flash erase operations write-block-size
 >int
 >address alignment required by flash write operations
+
+6. still has several problems
+6.1 zeropage
+ewoz's variables are still in problem, in ewoz you could test write ex: D8: FF or A8:FF.
+if wrote FF, it is normal, if not wrote FF, that is problem.
+6.2 basic sudden hangs
+i do not know how to mitigate this.
+garbage collection, or some kind of bug bites.
+
+But this works:-)
 
 Sorry, no warranty.  
 Enjoy!
