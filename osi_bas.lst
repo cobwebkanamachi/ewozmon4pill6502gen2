@@ -47,6 +47,7 @@ Current file: osi_bas.s
 000000r 1               ZP_START2 = $0D
 000000r 1               ZP_START3 = $5B
 000000r 1               ZP_START4 = $65
+000000r 1               ZP_START5 = $80
 000000r 1               
 000000r 1               ;extra ZP variables
 000000r 1               USR             := $000A
@@ -78,10 +79,11 @@ Current file: osi_bas.s
 000000r 1               CRLF_1 := CR
 000000r 1               CRLF_2 := LF
 000000r 1               
-000000r 1               .feature org_per_seg
-000000r 1               .zeropage
-000000r 1               .org $0000
-000000  1               .org ZP_START1
+000000r 1               ;.feature org_per_seg
+000000r 1               ;.zeropage
+000000r 1               .segment "ZEROPAGE"
+000000r 1               ;.org $00
+000000r 1               .org ZP_START1
 000000  1               GORESTART:
 000000  1  xx xx xx     	.res 3
 000003  1               GOSTROUT:
@@ -91,7 +93,41 @@ Current file: osi_bas.s
 000008  1               GOGIVEAYF:
 000008  1  xx xx        	.res 2
 00000A  1               
-00000A  1               .org ZP_START2
+00000A  1               ;.segment "DATA"
+00000A  1               .org $A8
+0000A8  1  01           XAML:   .byte 1 ;
+0000A9  1  01           XAMH:   .byte 1 ;
+0000AA  1  01           STL:    .byte 1 ;
+0000AB  1  01           STH:    .byte 1 ;
+0000AC  1  01           L:      .byte 1 ;
+0000AD  1  01           H:      .byte 1 ;
+0000AE  1  01           YSAV:   .byte 1 ;
+0000AF  1  01           MODE:   .byte 1 ;
+0000B0  1               .org $B8
+0000B8  1  01           MSGL:   .byte 1 ;
+0000B9  1  01           MSGH:   .byte 1 ;
+0000BA  1  01           COUNTER:.byte 1 ;
+0000BB  1  01           CRC:    .byte 1 ;
+0000BC  1  01           CRCCHECK: .byte 1 ;
+0000BD  1               
+0000BD  1               ;.org ZP_START5
+0000BD  1               ;XAML:   .res 2,$01 ;.byte $01 ;.res 1 ;.byte $01  ;            :=      $24            ;Last "opened" location Low
+0000BD  1               ;XAMH:   .res 2,$02 ;.byte $01 ;.res 1 ;.byte $02  ;            :=      $25            ;Last "opened" location High
+0000BD  1               ;STL:    .res 2,$03 ;.byte $01 ;.res 1 ;.byte $03  ;            :=      $26            ;Store address Low
+0000BD  1               ;STH:    .res 2,$04 ;.byte $01 ;.res 1 ;.byte $04  ;            :=      $27            ;Store address High
+0000BD  1               ;L:      .res 2,$05 ;.byte $01 ;.res 1 ;.byte $05  ;            :=      $28            ;Hex value parsing Low
+0000BD  1               ;H:      .res 2,$06 ;.byte $01 ;.res 1 ;.byte $06  ;            :=      $29            ;Hex value parsing High
+0000BD  1               ;YSAV:   .res 2,$07 ;.byte $01 ;.res 1 ;.byte $07  ;            :=      $2A            ;Used to see if hex value is given
+0000BD  1               ;MODE:   .res 2,$08 ;.byte $01 ;.res 1 ;.byte $08 ;            :=      $2B            ;$00=XAM, $7F=STOR, $AE=BLOCK XAM
+0000BD  1               ;MSGL:   .res 2,$09 ;.byte $01 ;.res 1 ;.byte $09  ;            :=      $2C
+0000BD  1               ;MSGH:   .res 2,$0A ;.byte $01 ;.res 1 ;.byte $0A  ;            :=      $2D
+0000BD  1               ;COUNTER: .res 2,$0B ;.byte $01 ;.res 1 ;.byte $0B  ;            :=      $2E
+0000BD  1               ;CRC:    .res 2,$0C ;.byte $01 ;.res 1 ;.byte $0C  ;            :=      $2F
+0000BD  1               ;CRCCHECK: .res 2,$0D ;.byte $01 ;.res 1 ;.byte $0d;            :=      $30
+0000BD  1               ;
+0000BD  1               ;.exportzp XAML, XAMH, STL, STH, L, H, YSAV, MODE, MSGL, MSGH, COUNTER, CRC, CRCCHECK
+0000BD  1               
+0000BD  1               .org ZP_START2
 00000D  1               Z15:
 00000D  1  xx           	.res 1
 00000E  1               POSX:
@@ -236,7 +272,7 @@ Current file: osi_bas.s
 0000BC  1               
 0000BC  1               ;232-5768 BAS
 0000BC  1               .segment "CODE"
-000000r 1               .org $C000
+0000BC  1               .org $C000
 00C000  1               TOKEN_ADDRESS_TABLE:
 00C000  1  2D C6        		.word END-1
 00C002  1  55 C5        		.word FOR-1
@@ -5819,20 +5855,23 @@ Current file: osi_bas.s
 00DED6  1               ;-------------------------------------------------------------------------
 00DED6  1               ;  Memory declaration
 00DED6  1               ;-------------------------------------------------------------------------
-00DED6  1               
-00DED6  1               XAML            :=      $24            ;Last "opened" location Low
-00DED6  1               XAMH            :=      $25            ;Last "opened" location High
-00DED6  1               STL             :=      $26            ;Store address Low
-00DED6  1               STH             :=      $27            ;Store address High
-00DED6  1               L               :=      $28            ;Hex value parsing Low
-00DED6  1               H               :=      $29            ;Hex value parsing High
-00DED6  1               YSAV            :=      $2A            ;Used to see if hex value is given
-00DED6  1               MODE            :=      $2B            ;$00=XAM, $7F=STOR, $AE=BLOCK XAM
-00DED6  1               MSGL            :=      $2C
-00DED6  1               MSGH            :=      $2D
-00DED6  1               COUNTER         :=      $2E
-00DED6  1               CRC             :=      $2F
-00DED6  1               CRCCHECK        :=      $30
+00DED6  1               ;@CheapLocal0:
+00DED6  1               ;	.byte $8b
+00DED6  1               ;       BAD : ca65 recognize op code and prevent to overwrite vars.
+00DED6  1               ;MSGL     := $E1; .byte $8b ;           :=      $F8
+00DED6  1               ;MSGH     := $E2; .byte $8b ;           :=      $F9
+00DED6  1               ;MYXAML   := $E3; BAD ;            :=      $F0            ;Last "opened" location Low
+00DED6  1               ;MYXAMH   := $E4; BAD ;.byte $8b ;            :=      $F1            ;Last "opened" location High
+00DED6  1               ;COUNTER  := $E5; .byte $8b ;        :=      $FA
+00DED6  1               ;CRC      := $E6; .byte $8b ;        :=      $FB
+00DED6  1               ;CRCCHECK := $E7; .byte $8b ;       :=      $FC
+00DED6  1               ;STL      := $E8; BAD ;.byte $8b ;            :=      $F2            ;Store address Low
+00DED6  1               ;STH      := $E9; BAD ;.byte $8b ;            :=      $F3            ;Store address High
+00DED6  1               ;L        := $EA; BAD ;.byte $8b ;            :=      $F4            ;Hex value parsing LowD
+00DED6  1               ;H        := $EB; BAD ;.byte $8b ;            :=      $F5            ;Hex value parsing High
+00DED6  1               ;YSAV     := $EC; BAD ;.byte $8b ;           :=      $F6            ;Used to see if hex value is given
+00DED6  1               ;MODE     := $ED; BAD ;.byte $8b ;           :=      $F7            ;$00=XAM, $7F=STOR, $AE=BLOCK XAM
+00DED6  1               ;.importzp XAML, XAMH, STL, STH, L, H, YSAV, MODE, MSGL, MSGH, COUNTER, CRC, CRCCHECK
 00DED6  1               
 00DED6  1               IN              :=      $0200          ;Input buffer
 00DED6  1               ;ACIA := $A000
@@ -5874,9 +5913,9 @@ Current file: osi_bas.s
 00DEE1  1  A9 0D        SOFTRESET:      LDA     #$0D
 00DEE3  1  20 06 E0                     JSR     ECHO
 00DEE6  1  A9 0D                        LDA     #<MSG1
-00DEE8  1  85 2C                        STA     MSGL
+00DEE8  1  85 B8                        STA     z:MSGL
 00DEEA  1  A9 E1                        LDA     #>MSG1
-00DEEC  1  85 2D                        STA     MSGH
+00DEEC  1  85 B9                        STA     z:MSGH
 00DEEE  1  20 17 E0                     JSR     SHWMSG         ;* Show Welcome
 00DEF1  1  A9 8D                        LDA     #MYCR
 00DEF3  1  20 06 E0                     JSR     ECHO
@@ -5934,7 +5973,7 @@ Current file: osi_bas.s
 00DF44  1               
 00DF44  1  0A           SETSTOR:        ASL                    ;Leaves $7B if setting STOR mode
 00DF45  1               
-00DF45  1  85 2B        SETMODE:        STA     MODE           ;$00 = XAM, $7B = STOR, $AE = BLOK XAM
+00DF45  1  85 AF        SETMODE:        STA     z:MODE           ;$00 = XAM, $7B = STOR, $AE = BLOK XAM
 00DF47  1               
 00DF47  1  C8           BLSKIP:         INY                    ;Advance text index
 00DF48  1               
@@ -5950,9 +5989,9 @@ Current file: osi_bas.s
 00DF5B  1  F0 31                        BEQ     MYRUN            ;Yes, run user program
 00DF5D  1  C9 CC                        CMP     #$CC           ;* "L"?
 00DF5F  1  F0 36                        BEQ     LOADINT        ;* Yes, Load Intel Code
-00DF61  1  86 28                        STX     L              ;$00->L
-00DF63  1  86 29                        STX     H              ; and H
-00DF65  1  84 2A                        STY     YSAV           ;Save Y for comparison
+00DF61  1  86 AC                        STX     z:L              ;$00->L
+00DF63  1  86 AD                        STX     z:H              ; and H
+00DF65  1  84 AE                        STY     z:YSAV           ;Save Y for comparison
 00DF67  1               
 00DF67  1               ; Here we're trying to parse a new hex value
 00DF67  1               
@@ -5970,31 +6009,31 @@ Current file: osi_bas.s
 00DF79  1  0A                           ASL
 00DF7A  1  A2 04                        LDX     #4             ;Shift count
 00DF7C  1  0A           HEXSHIFT:       ASL                    ;Hex digit left MSB to carry
-00DF7D  1  26 28                        ROL     L              ;Rotate into LSD
-00DF7F  1  26 29                        ROL     H              ;Rotate into MSD's
+00DF7D  1  26 AC                        ROL     z:L              ;Rotate into LSD
+00DF7F  1  26 AD                        ROL     z:H              ;Rotate into MSD's
 00DF81  1  CA                           DEX                    ;Done 4 shifts?
 00DF82  1  D0 F8                        BNE     HEXSHIFT       ;No, loop
 00DF84  1  C8                           INY                    ;Advance text index
 00DF85  1  D0 E0                        BNE     NEXTHEX        ;Always taken. Check next character for hex
 00DF87  1               
-00DF87  1  C4 2A        NOTHEX:         CPY     YSAV           ;Check if L, H empty (no hex digits)
+00DF87  1  C4 AE        NOTHEX:         CPY     z:YSAV           ;Check if L, H empty (no hex digits)
 00DF89  1  D0 12                        BNE     NOESCAPE       ;* Branch out of range, had to improvise...
 00DF8B  1  4C 05 DF                     JMP     ESCAPE         ;Yes, generate ESC sequence
 00DF8E  1               
 00DF8E  1  20 94 DF     MYRUN:            JSR     ACTRUN         ;* JSR to the Address we want to run
 00DF91  1  4C E1 DE                     JMP     SOFTRESET      ;* When returned for the program, reset EWOZ
-00DF94  1  6C 24 00     ACTRUN:         JMP     (XAML)         ;Run at current XAM index
+00DF94  1  6C A8 00     ACTRUN:         JMP     (XAML)         ;Run at current XAM index
 00DF97  1               
 00DF97  1  20 24 E0     LOADINT:        JSR     LOADINTEL      ;* Load the Intel code
 00DF9A  1  4C E1 DE                     JMP     SOFTRESET      ;* When returned from the program, reset EWOZ
 00DF9D  1               
-00DF9D  1  24 2B        NOESCAPE:       BIT     MODE           ;Test MODE byte.
+00DF9D  1  24 AF        NOESCAPE:       BIT     z:MODE           ;Test MODE byte.
 00DF9F  1  50 0D                        BVC     NOTSTOR        ;B6=0 for STOR, 1 for XAM and BLOCK XAM
-00DFA1  1  A5 28                        LDA     L              ;LSD's of hex data
-00DFA3  1  81 26                        STA     (STL, X)       ;Store at current "store index"
-00DFA5  1  E6 26                        INC     STL            ;Increment store index
+00DFA1  1  A5 AC                        LDA     z:L              ;LSD's of hex data
+00DFA3  1  81 AA                        STA     (STL, X)       ;Store at current "store index"
+00DFA5  1  E6 AA                        INC     z:STL            ;Increment store index
 00DFA7  1  D0 9F                        BNE     NEXTITEM       ;Get next item (no carry)
-00DFA9  1  E6 27                        INC     STH            ;Add carry to 'store index' high order
+00DFA9  1  E6 AB                        INC     z:STH            ;Add carry to 'store index' high order
 00DFAB  1               
 00DFAB  1  4C 48 DF     TONEXTITEM:     JMP     NEXTITEM       ;Get next command item
 00DFAE  1               
@@ -6003,9 +6042,9 @@ Current file: osi_bas.s
 00DFB0  1               ; We're in XAM mode now
 00DFB0  1               
 00DFB0  1  A2 02                        LDX     #2             ;Byte count
-00DFB2  1  B5 27        SETADR:         LDA     L-1,X          ;Copy hex data to
-00DFB4  1  95 25                        STA     STL-1,X        ;"store index"
-00DFB6  1  95 23                        STA     XAML-1,X       ;And to "XAM index'
+00DFB2  1  B5 AB        SETADR:         LDA     z:L-1,X          ;Copy hex data to
+00DFB4  1  95 A9                        STA     z:STL-1,X        ;"store index"
+00DFB6  1  95 A7                        STA     z:XAML-1,X       ;And to "XAM index'
 00DFB8  1  CA                           DEX                    ;Next of 2 bytes
 00DFB9  1  D0 F7                        BNE     SETADR         ;Loop unless X = 0
 00DFBB  1               
@@ -6014,29 +6053,29 @@ Current file: osi_bas.s
 00DFBB  1  D0 14        NXTPRNT:        BNE     PRDATA         ;NE means no address to print
 00DFBD  1  A9 8D                        LDA     #MYCR
 00DFBF  1  20 06 E0                     JSR     ECHO
-00DFC2  1  A5 25                        LDA     XAMH           ;'Examine index' high-order byte
+00DFC2  1  A5 A9                        LDA     z:XAMH           ;'Examine index' high-order byte
 00DFC4  1  20 F3 DF                     JSR     PRBYTE         ;Output it in hex format
-00DFC7  1  A5 24                        LDA     XAML           ;Low-order "examine index" byte
+00DFC7  1  A5 A8                        LDA     z:XAML           ;Low-order "examine index" byte
 00DFC9  1  20 F3 DF                     JSR     PRBYTE         ;Output it in hex format
 00DFCC  1  A9 3A                        LDA     #':'           ;print colon
 00DFCE  1  20 06 E0                     JSR     ECHO
 00DFD1  1               
 00DFD1  1  A9 20        PRDATA:         LDA     #' '           ;print space
 00DFD3  1  20 06 E0                     JSR     ECHO
-00DFD6  1  A1 24                        LDA     (XAML,X)       ;Get data byte at 'examine index"
+00DFD6  1  A1 A8                        LDA     (XAML,X)       ;Get data byte at 'examine index"
 00DFD8  1  20 F3 DF                     JSR     PRBYTE         ;Output it in hex format
-00DFDB  1  86 2B        XAMNEXT:        STX     MODE           ;0-> MODE (XAM mode)
-00DFDD  1  A5 24                        LDA     XAML
-00DFDF  1  C5 28                        CMP     L              ;Compare 'examine index" to hex data
-00DFE1  1  A5 25                        LDA     XAMH
-00DFE3  1  E5 29                        SBC     H
+00DFDB  1  86 AF        XAMNEXT:        STX     z:MODE           ;0-> MODE (XAM mode)
+00DFDD  1  A5 A8                        LDA     z:XAML
+00DFDF  1  C5 AC                        CMP     z:L              ;Compare 'examine index" to hex data
+00DFE1  1  A5 A9                        LDA     z:XAMH
+00DFE3  1  E5 AD                        SBC     z:H
 00DFE5  1  B0 C4                        BCS     TONEXTITEM     ;Not less, so no more data to output
 00DFE7  1               
-00DFE7  1  E6 24                        INC     XAML
+00DFE7  1  E6 A8                        INC     z:XAML
 00DFE9  1  D0 02                        BNE     MOD8CHK        ;Increment 'examine index"
-00DFEB  1  E6 25                        INC     XAMH
+00DFEB  1  E6 A9                        INC     z:XAMH
 00DFED  1               
-00DFED  1  A5 24        MOD8CHK:        LDA     XAML           ;Check low-order 'exainine index' byte
+00DFED  1  A5 A8        MOD8CHK:        LDA     z:XAML           ;Check low-order 'exainine index' byte
 00DFEF  1  29 0F                        AND     #$0F           ;For MOD 8=0 ** changed to $0F to get 16 values per row **
 00DFF1  1  10 C8                        BPL     NXTPRNT        ;Always taken
 00DFF3  1               
@@ -6081,7 +6120,7 @@ Current file: osi_bas.s
 00E016  1  60           		        RTS
 00E017  1               
 00E017  1  A0 00        SHWMSG:         LDY     #$0
-00E019  1  B1 2C        MYPRINT:        LDA     (MSGL),Y
+00E019  1  B1 B8        MYPRINT:        LDA     (MSGL),Y
 00E01B  1  F0 06                        BEQ     MYDONE
 00E01D  1  20 06 E0                     JSR     ECHO
 00E020  1  C8                           INY
@@ -6095,14 +6134,14 @@ Current file: osi_bas.s
 00E024  1  A9 8D        LOADINTEL:      LDA     #MYCR
 00E026  1  20 06 E0                     JSR     ECHO
 00E029  1  A9 2B                        LDA     #<MSG2
-00E02B  1  85 2C                        STA     MSGL
+00E02B  1  85 B8                        STA     z:MSGL
 00E02D  1  A9 E1                        LDA     #>MSG2
-00E02F  1  85 2D                        STA     MSGH
+00E02F  1  85 B9                        STA     z:MSGH
 00E031  1  20 17 E0                     JSR     SHWMSG         ;Show Start Transfer
 00E034  1  A9 8D                        LDA     #MYCR
 00E036  1  20 06 E0                     JSR     ECHO
 00E039  1  A0 00                        LDY     #$00
-00E03B  1  84 30                        STY     CRCCHECK       ;If CRCCHECK=0, all is good
+00E03B  1  84 BC                        STY     z:CRCCHECK       ;If CRCCHECK=0, all is good
 00E03D  1  20 02 E1     INTELLINE:      JSR     GETCHAR        ;Get char
 00E040  1  99 00 02                     STA     IN,Y           ;Store it
 00E043  1  C8                           INY                    ;Next
@@ -6117,57 +6156,57 @@ Current file: osi_bas.s
 00E054  1  D0 F8                        BNE     FINDCOL        ; Nope, try next
 00E056  1  C8                           INY                    ; Skip colon
 00E057  1  A2 00                        LDX     #$00           ; Zero in X
-00E059  1  86 2F                        STX     CRC            ; Zero Check sum
+00E059  1  86 BB                        STX     z:CRC            ; Zero Check sum
 00E05B  1  20 DF E0                     JSR     GETHEX         ; Get Number of bytes
-00E05E  1  85 2E                        STA     COUNTER        ; Number of bytes in Counter
+00E05E  1  85 BA                        STA     z:COUNTER        ; Number of bytes in Counter
 00E060  1  18                           CLC                    ; Clear carry
-00E061  1  65 2F                        ADC     CRC            ; Add CRC
-00E063  1  85 2F                        STA     CRC            ; Store it
+00E061  1  65 BB                        ADC     z:CRC            ; Add CRC
+00E063  1  85 BB                        STA     z:CRC            ; Store it
 00E065  1  20 DF E0                     JSR     GETHEX         ; Get Hi byte
-00E068  1  85 27                        STA     STH            ; Store it
+00E068  1  85 AB                        STA     z:STH            ; Store it
 00E06A  1  18                           CLC                    ; Clear carry
-00E06B  1  65 2F                        ADC     CRC            ; Add CRC
-00E06D  1  85 2F                        STA     CRC            ; Store it
+00E06B  1  65 BB                        ADC     z:CRC            ; Add CRC
+00E06D  1  85 BB                        STA     z:CRC            ; Store it
 00E06F  1  20 DF E0                     JSR     GETHEX         ; Get Lo byte
-00E072  1  85 26                        STA     STL            ; Store it
+00E072  1  85 AA                        STA     z:STL            ; Store it
 00E074  1  18                           CLC                    ; Clear carry
-00E075  1  65 2F                        ADC     CRC            ; Add CRC
-00E077  1  85 2F                        STA     CRC            ; Store it
+00E075  1  65 BB                        ADC     z:CRC            ; Add CRC
+00E077  1  85 BB                        STA     z:CRC            ; Store it
 00E079  1  A9 2E                        LDA     #'.'           ; Load "."
 00E07B  1  20 06 E0                     JSR     ECHO           ; Print it to indicate activity
 00E07E  1  20 DF E0     NODOT:          JSR     GETHEX         ; Get Control byte
 00E081  1  C9 01                        CMP     #$01           ; Is it a Termination record ?
 00E083  1  F0 2A                        BEQ     INTELDONE      ; Yes, we are done
 00E085  1  18                           CLC                    ; Clear carry
-00E086  1  65 2F                        ADC     CRC            ; Add CRC
-00E088  1  85 2F                        STA     CRC            ; Store it
+00E086  1  65 BB                        ADC     z:CRC            ; Add CRC
+00E088  1  85 BB                        STA     z:CRC            ; Store it
 00E08A  1  20 DF E0     INTELSTORE:     JSR     GETHEX         ; Get Data Byte
-00E08D  1  81 26                        STA     (STL,X)        ; Store it
+00E08D  1  81 AA                        STA     (STL,X)        ; Store it
 00E08F  1  18                           CLC                    ; Clear carry
-00E090  1  65 2F                        ADC     CRC            ; Add CRC
-00E092  1  85 2F                        STA     CRC            ; Store it
-00E094  1  E6 26                        INC     STL            ; Next Address
+00E090  1  65 BB                        ADC     z:CRC            ; Add CRC
+00E092  1  85 BB                        STA     z:CRC            ; Store it
+00E094  1  E6 AA                        INC     z:STL            ; Next Address
 00E096  1  D0 02                        BNE     TESTCOUNT      ; Test to see if Hi byte needs INC
-00E098  1  E6 27                        INC     STH            ; If so, INC it
-00E09A  1  C6 2E        TESTCOUNT:      DEC     COUNTER        ; Count down
+00E098  1  E6 AB                        INC     z:STH            ; If so, INC it
+00E09A  1  C6 BA        TESTCOUNT:      DEC     z:COUNTER        ; Count down
 00E09C  1  D0 EC                        BNE     INTELSTORE     ; Next byte
 00E09E  1  20 DF E0                     JSR     GETHEX         ; Get Checksum
 00E0A1  1  A0 00                        LDY     #$00           ; Zero Y
 00E0A3  1  18                           CLC                    ; Clear carry
-00E0A4  1  65 2F                        ADC     CRC            ; Add CRC
+00E0A4  1  65 BB                        ADC     z:CRC            ; Add CRC
 00E0A6  1  F0 95                        BEQ     INTELLINE      ; Checksum OK
 00E0A8  1  A9 01                        LDA     #$01           ; Flag CRC error
-00E0AA  1  85 30                        STA     CRCCHECK       ; Store it
+00E0AA  1  85 BC                        STA     z:CRCCHECK       ; Store it
 00E0AC  1  4C 3D E0                     JMP     INTELLINE      ; Process next line
 00E0AF  1               
-00E0AF  1  A5 30        INTELDONE:      LDA     CRCCHECK       ; Test if everything is OK
+00E0AF  1  A5 BC        INTELDONE:      LDA     z:CRCCHECK       ; Test if everything is OK
 00E0B1  1  F0 16                        BEQ     OKMESS         ; Show OK message
 00E0B3  1  A9 8D                        LDA     #MYCR
 00E0B5  1  20 06 E0                     JSR     ECHO
 00E0B8  1  A9 67                        LDA     #<MSG4         ; Load Error Message
-00E0BA  1  85 2C                        STA     MSGL
+00E0BA  1  85 B8                        STA     z:MSGL
 00E0BC  1  A9 E1                        LDA     #>MSG4
-00E0BE  1  85 2D                        STA     MSGH
+00E0BE  1  85 B9                        STA     z:MSGH
 00E0C0  1  20 17 E0                     JSR     SHWMSG         ;Show Error
 00E0C3  1  A9 8D                        LDA     #MYCR
 00E0C5  1  20 06 E0                     JSR     ECHO
@@ -6176,9 +6215,9 @@ Current file: osi_bas.s
 00E0C9  1  A9 8D        OKMESS:         LDA     #MYCR
 00E0CB  1  20 06 E0                     JSR     ECHO
 00E0CE  1  A9 4D                        LDA     #<MSG3         ;Load OK Message
-00E0D0  1  85 2C                        STA     MSGL
+00E0D0  1  85 B8                        STA     z:MSGL
 00E0D2  1  A9 E1                        LDA     #>MSG3
-00E0D4  1  85 2D                        STA     MSGH
+00E0D4  1  85 B9                        STA     z:MSGH
 00E0D6  1  20 17 E0                     JSR     SHWMSG         ;Show Done
 00E0D9  1  A9 8D                        LDA     #MYCR
 00E0DB  1  20 06 E0                     JSR     ECHO
@@ -6193,7 +6232,7 @@ Current file: osi_bas.s
 00E0EB  1  0A                           ASL
 00E0EC  1  0A                           ASL
 00E0ED  1  0A                           ASL
-00E0EE  1  85 28                        STA     L
+00E0EE  1  85 AC                        STA     z:L
 00E0F0  1  C8                           INY
 00E0F1  1  B9 00 02                     LDA     IN,Y           ;Get next char
 00E0F4  1  49 30                        EOR     #$30
@@ -6201,7 +6240,7 @@ Current file: osi_bas.s
 00E0F8  1  90 02                        BCC     DONESECOND
 00E0FA  1  69 08                        ADC     #$08
 00E0FC  1  29 0F        DONESECOND:     AND     #$0F
-00E0FE  1  05 28                        ORA     L
+00E0FE  1  05 AC                        ORA     z:L
 00E100  1  C8                           INY
 00E101  1  60                           RTS
 00E102  1               
@@ -6249,7 +6288,7 @@ Current file: osi_bas.s
 00E192  1               ACIAData := ACIA+1
 00E192  1               
 00E192  1               .segment "IOHANDLER"
-000000r 1               .org $FF00
+00E192  1               .org $FF00
 00FF00  1               Reset:
 00FF00  1  A2 FC        	LDX     #STACK_TOP
 00FF02  1  9A           	TXS
@@ -6357,7 +6396,7 @@ Current file: osi_bas.s
 00FFCF  1  60           	RTS
 00FFD0  1               
 00FFD0  1               .segment "VECTS"
-000000r 1               .org $FFFA
+00FFD0  1               .org $FFFA
 00FFFA  1  00 FF        	.word	Reset		; NMI
 00FFFC  1  00 FF        	.word	Reset		; RESET
 00FFFE  1  00 FF        	.word	Reset		; IRQ

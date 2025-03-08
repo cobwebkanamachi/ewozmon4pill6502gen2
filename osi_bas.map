@@ -2,7 +2,7 @@ Modules list:
 -------------
 osi_bas.o:
     CODE              Offs = 000000   Size = 002192
-    ZEROPAGE          Offs = 000000   Size = 000071
+    ZEROPAGE          Offs = 000000   Size = 00007E
     IOHANDLER         Offs = 000000   Size = 0000D0
     VECTS             Offs = 000000   Size = 000006
 
@@ -11,7 +11,7 @@ Segment list:
 -------------
 Name                  Start   End     Size
 --------------------------------------------
-ZEROPAGE              000000  000070  000071
+ZEROPAGE              000000  00007D  00007E
 CODE                  00A000  00C191  002192
 IOHANDLER             00FF00  00FFCF  0000D0
 VECTS                 00FFFA  00FFFF  000006

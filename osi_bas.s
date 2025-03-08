@@ -43,6 +43,7 @@ ZP_START1 = $00
 ZP_START2 = $0D
 ZP_START3 = $5B
 ZP_START4 = $65
+ZP_START5 = $80
 
 ;extra ZP variables
 USR             := $000A
@@ -74,9 +75,10 @@ LF=10
 CRLF_1 := CR
 CRLF_2 := LF
 
-.feature org_per_seg
-.zeropage
-.org $0000
+;.feature org_per_seg
+;.zeropage
+.segment "ZEROPAGE"
+;.org $00
 .org ZP_START1
 GORESTART:
 	.res 3
@@ -86,6 +88,40 @@ GOAYINT:
 	.res 2
 GOGIVEAYF:
 	.res 2
+
+;.segment "DATA"
+.org $A8
+XAML:   .byte 1 ;
+XAMH:   .byte 1 ;
+STL:    .byte 1 ;
+STH:    .byte 1 ;
+L:      .byte 1 ;
+H:      .byte 1 ;
+YSAV:   .byte 1 ;
+MODE:   .byte 1 ;
+.org $B8
+MSGL:   .byte 1 ;
+MSGH:   .byte 1 ;
+COUNTER:.byte 1 ;
+CRC:    .byte 1 ;
+CRCCHECK: .byte 1 ;
+
+;.org ZP_START5
+;XAML:   .res 2,$01 ;.byte $01 ;.res 1 ;.byte $01  ;            :=      $24            ;Last "opened" location Low
+;XAMH:   .res 2,$02 ;.byte $01 ;.res 1 ;.byte $02  ;            :=      $25            ;Last "opened" location High
+;STL:    .res 2,$03 ;.byte $01 ;.res 1 ;.byte $03  ;            :=      $26            ;Store address Low
+;STH:    .res 2,$04 ;.byte $01 ;.res 1 ;.byte $04  ;            :=      $27            ;Store address High
+;L:      .res 2,$05 ;.byte $01 ;.res 1 ;.byte $05  ;            :=      $28            ;Hex value parsing Low
+;H:      .res 2,$06 ;.byte $01 ;.res 1 ;.byte $06  ;            :=      $29            ;Hex value parsing High
+;YSAV:   .res 2,$07 ;.byte $01 ;.res 1 ;.byte $07  ;            :=      $2A            ;Used to see if hex value is given
+;MODE:   .res 2,$08 ;.byte $01 ;.res 1 ;.byte $08 ;            :=      $2B            ;$00=XAM, $7F=STOR, $AE=BLOCK XAM
+;MSGL:   .res 2,$09 ;.byte $01 ;.res 1 ;.byte $09  ;            :=      $2C
+;MSGH:   .res 2,$0A ;.byte $01 ;.res 1 ;.byte $0A  ;            :=      $2D
+;COUNTER: .res 2,$0B ;.byte $01 ;.res 1 ;.byte $0B  ;            :=      $2E
+;CRC:    .res 2,$0C ;.byte $01 ;.res 1 ;.byte $0C  ;            :=      $2F
+;CRCCHECK: .res 2,$0D ;.byte $01 ;.res 1 ;.byte $0d;            :=      $30
+;
+;.exportzp XAML, XAMH, STL, STH, L, H, YSAV, MODE, MSGL, MSGH, COUNTER, CRC, CRCCHECK
 
 .org ZP_START2
 Z15:
@@ -5779,20 +5815,23 @@ QT_BYTES_FREE:
 ;-------------------------------------------------------------------------
 ;  Memory declaration
 ;-------------------------------------------------------------------------
-
-XAML            :=      $24            ;Last "opened" location Low
-XAMH            :=      $25            ;Last "opened" location High
-STL             :=      $26            ;Store address Low
-STH             :=      $27            ;Store address High
-L               :=      $28            ;Hex value parsing Low
-H               :=      $29            ;Hex value parsing High
-YSAV            :=      $2A            ;Used to see if hex value is given
-MODE            :=      $2B            ;$00=XAM, $7F=STOR, $AE=BLOCK XAM
-MSGL            :=      $2C
-MSGH            :=      $2D
-COUNTER         :=      $2E
-CRC             :=      $2F
-CRCCHECK        :=      $30
+;@CheapLocal0:
+;	.byte $8b
+;       BAD : ca65 recognize op code and prevent to overwrite vars.
+;MSGL     := $E1; .byte $8b ;           :=      $F8
+;MSGH     := $E2; .byte $8b ;           :=      $F9
+;MYXAML   := $E3; BAD ;            :=      $F0            ;Last "opened" location Low
+;MYXAMH   := $E4; BAD ;.byte $8b ;            :=      $F1            ;Last "opened" location High
+;COUNTER  := $E5; .byte $8b ;        :=      $FA
+;CRC      := $E6; .byte $8b ;        :=      $FB
+;CRCCHECK := $E7; .byte $8b ;       :=      $FC
+;STL      := $E8; BAD ;.byte $8b ;            :=      $F2            ;Store address Low
+;STH      := $E9; BAD ;.byte $8b ;            :=      $F3            ;Store address High
+;L        := $EA; BAD ;.byte $8b ;            :=      $F4            ;Hex value parsing LowD
+;H        := $EB; BAD ;.byte $8b ;            :=      $F5            ;Hex value parsing High
+;YSAV     := $EC; BAD ;.byte $8b ;           :=      $F6            ;Used to see if hex value is given
+;MODE     := $ED; BAD ;.byte $8b ;           :=      $F7            ;$00=XAM, $7F=STOR, $AE=BLOCK XAM
+;.importzp XAML, XAMH, STL, STH, L, H, YSAV, MODE, MSGL, MSGH, COUNTER, CRC, CRCCHECK
 
 IN              :=      $0200          ;Input buffer
 ;ACIA := $A000
@@ -5834,9 +5873,9 @@ EWOZENT:        SEI
 SOFTRESET:      LDA     #$0D
                 JSR     ECHO           
                 LDA     #<MSG1
-                STA     MSGL
+                STA     z:MSGL
                 LDA     #>MSG1
-                STA     MSGH
+                STA     z:MSGH
                 JSR     SHWMSG         ;* Show Welcome
                 LDA     #MYCR
                 JSR     ECHO           
@@ -5894,7 +5933,7 @@ CONVERT:        ORA     #$80           ;*set bit 7 to conform to original keyboa
 
 SETSTOR:        ASL                    ;Leaves $7B if setting STOR mode
 
-SETMODE:        STA     MODE           ;$00 = XAM, $7B = STOR, $AE = BLOK XAM
+SETMODE:        STA     z:MODE           ;$00 = XAM, $7B = STOR, $AE = BLOK XAM
 
 BLSKIP:         INY                    ;Advance text index
 
@@ -5910,9 +5949,9 @@ NEXTITEM:       LDA     IN,Y           ;Get character
                 BEQ     MYRUN            ;Yes, run user program
                 CMP     #$CC           ;* "L"?
                 BEQ     LOADINT        ;* Yes, Load Intel Code
-                STX     L              ;$00->L
-                STX     H              ; and H
-                STY     YSAV           ;Save Y for comparison
+                STX     z:L              ;$00->L
+                STX     z:H              ; and H
+                STY     z:YSAV           ;Save Y for comparison
 
 ; Here we're trying to parse a new hex value
 
@@ -5930,14 +5969,14 @@ DIG:            ASL
                 ASL
                 LDX     #4             ;Shift count
 HEXSHIFT:       ASL                    ;Hex digit left MSB to carry
-                ROL     L              ;Rotate into LSD
-                ROL     H              ;Rotate into MSD's
+                ROL     z:L              ;Rotate into LSD
+                ROL     z:H              ;Rotate into MSD's
                 DEX                    ;Done 4 shifts?
                 BNE     HEXSHIFT       ;No, loop
                 INY                    ;Advance text index
                 BNE     NEXTHEX        ;Always taken. Check next character for hex
 
-NOTHEX:         CPY     YSAV           ;Check if L, H empty (no hex digits)
+NOTHEX:         CPY     z:YSAV           ;Check if L, H empty (no hex digits)
                 BNE     NOESCAPE       ;* Branch out of range, had to improvise...
                 JMP     ESCAPE         ;Yes, generate ESC sequence
 
@@ -5948,13 +5987,13 @@ ACTRUN:         JMP     (XAML)         ;Run at current XAM index
 LOADINT:        JSR     LOADINTEL      ;* Load the Intel code
                 JMP     SOFTRESET      ;* When returned from the program, reset EWOZ
 
-NOESCAPE:       BIT     MODE           ;Test MODE byte.
+NOESCAPE:       BIT     z:MODE           ;Test MODE byte.
                 BVC     NOTSTOR        ;B6=0 for STOR, 1 for XAM and BLOCK XAM
-                LDA     L              ;LSD's of hex data
+                LDA     z:L              ;LSD's of hex data
                 STA     (STL, X)       ;Store at current "store index"
-                INC     STL            ;Increment store index
+                INC     z:STL            ;Increment store index
                 BNE     NEXTITEM       ;Get next item (no carry)
-                INC     STH            ;Add carry to 'store index' high order
+                INC     z:STH            ;Add carry to 'store index' high order
 
 TONEXTITEM:     JMP     NEXTITEM       ;Get next command item
 
@@ -5963,9 +6002,9 @@ NOTSTOR:        BMI     XAMNEXT        ;B7=0 for XAM, 1 for BLOCK XAM
 ; We're in XAM mode now
 
                 LDX     #2             ;Byte count
-SETADR:         LDA     L-1,X          ;Copy hex data to
-                STA     STL-1,X        ;"store index"
-                STA     XAML-1,X       ;And to "XAM index'
+SETADR:         LDA     z:L-1,X          ;Copy hex data to
+                STA     z:STL-1,X        ;"store index"
+                STA     z:XAML-1,X       ;And to "XAM index'
                 DEX                    ;Next of 2 bytes
                 BNE     SETADR         ;Loop unless X = 0
 
@@ -5974,9 +6013,9 @@ SETADR:         LDA     L-1,X          ;Copy hex data to
 NXTPRNT:        BNE     PRDATA         ;NE means no address to print
                 LDA     #MYCR
                 JSR     ECHO           
-                LDA     XAMH           ;'Examine index' high-order byte
+                LDA     z:XAMH           ;'Examine index' high-order byte
                 JSR     PRBYTE         ;Output it in hex format
-                LDA     XAML           ;Low-order "examine index" byte
+                LDA     z:XAML           ;Low-order "examine index" byte
                 JSR     PRBYTE         ;Output it in hex format
                 LDA     #':'           ;print colon
                 JSR     ECHO           
@@ -5985,18 +6024,18 @@ PRDATA:         LDA     #' '           ;print space
                 JSR     ECHO           
                 LDA     (XAML,X)       ;Get data byte at 'examine index"
                 JSR     PRBYTE         ;Output it in hex format
-XAMNEXT:        STX     MODE           ;0-> MODE (XAM mode)
-                LDA     XAML
-                CMP     L              ;Compare 'examine index" to hex data
-                LDA     XAMH
-                SBC     H
+XAMNEXT:        STX     z:MODE           ;0-> MODE (XAM mode)
+                LDA     z:XAML
+                CMP     z:L              ;Compare 'examine index" to hex data
+                LDA     z:XAMH
+                SBC     z:H
                 BCS     TONEXTITEM     ;Not less, so no more data to output
 
-                INC     XAML
+                INC     z:XAML
                 BNE     MOD8CHK        ;Increment 'examine index"
-                INC     XAMH
+                INC     z:XAMH
 
-MOD8CHK:        LDA     XAML           ;Check low-order 'exainine index' byte
+MOD8CHK:        LDA     z:XAML           ;Check low-order 'exainine index' byte
                 AND     #$0F           ;For MOD 8=0 ** changed to $0F to get 16 values per row **
                 BPL     NXTPRNT        ;Always taken
 
@@ -6055,14 +6094,14 @@ MYDONE:         RTS
 LOADINTEL:      LDA     #MYCR
                 JSR     ECHO           
                 LDA     #<MSG2
-                STA     MSGL
+                STA     z:MSGL
                 LDA     #>MSG2
-                STA     MSGH
+                STA     z:MSGH
                 JSR     SHWMSG         ;Show Start Transfer
                 LDA     #MYCR
                 JSR     ECHO           
                 LDY     #$00
-                STY     CRCCHECK       ;If CRCCHECK=0, all is good
+                STY     z:CRCCHECK       ;If CRCCHECK=0, all is good
 INTELLINE:      JSR     GETCHAR        ;Get char
                 STA     IN,Y           ;Store it
                 INY                    ;Next
@@ -6077,57 +6116,57 @@ FINDCOL:        INY
                 BNE     FINDCOL        ; Nope, try next
                 INY                    ; Skip colon
                 LDX     #$00           ; Zero in X
-                STX     CRC            ; Zero Check sum
+                STX     z:CRC            ; Zero Check sum
                 JSR     GETHEX         ; Get Number of bytes
-                STA     COUNTER        ; Number of bytes in Counter
+                STA     z:COUNTER        ; Number of bytes in Counter
                 CLC                    ; Clear carry
-                ADC     CRC            ; Add CRC
-                STA     CRC            ; Store it
+                ADC     z:CRC            ; Add CRC
+                STA     z:CRC            ; Store it
                 JSR     GETHEX         ; Get Hi byte
-                STA     STH            ; Store it
+                STA     z:STH            ; Store it
                 CLC                    ; Clear carry
-                ADC     CRC            ; Add CRC
-                STA     CRC            ; Store it
+                ADC     z:CRC            ; Add CRC
+                STA     z:CRC            ; Store it
                 JSR     GETHEX         ; Get Lo byte
-                STA     STL            ; Store it
+                STA     z:STL            ; Store it
                 CLC                    ; Clear carry
-                ADC     CRC            ; Add CRC
-                STA     CRC            ; Store it
+                ADC     z:CRC            ; Add CRC
+                STA     z:CRC            ; Store it
                 LDA     #'.'           ; Load "."
                 JSR     ECHO           ; Print it to indicate activity
 NODOT:          JSR     GETHEX         ; Get Control byte
                 CMP     #$01           ; Is it a Termination record ?
                 BEQ     INTELDONE      ; Yes, we are done
                 CLC                    ; Clear carry
-                ADC     CRC            ; Add CRC
-                STA     CRC            ; Store it
+                ADC     z:CRC            ; Add CRC
+                STA     z:CRC            ; Store it
 INTELSTORE:     JSR     GETHEX         ; Get Data Byte
                 STA     (STL,X)        ; Store it
                 CLC                    ; Clear carry
-                ADC     CRC            ; Add CRC
-                STA     CRC            ; Store it
-                INC     STL            ; Next Address
+                ADC     z:CRC            ; Add CRC
+                STA     z:CRC            ; Store it
+                INC     z:STL            ; Next Address
                 BNE     TESTCOUNT      ; Test to see if Hi byte needs INC
-                INC     STH            ; If so, INC it
-TESTCOUNT:      DEC     COUNTER        ; Count down
+                INC     z:STH            ; If so, INC it
+TESTCOUNT:      DEC     z:COUNTER        ; Count down
                 BNE     INTELSTORE     ; Next byte
                 JSR     GETHEX         ; Get Checksum
                 LDY     #$00           ; Zero Y
                 CLC                    ; Clear carry
-                ADC     CRC            ; Add CRC
+                ADC     z:CRC            ; Add CRC
                 BEQ     INTELLINE      ; Checksum OK
                 LDA     #$01           ; Flag CRC error
-                STA     CRCCHECK       ; Store it
+                STA     z:CRCCHECK       ; Store it
                 JMP     INTELLINE      ; Process next line
 
-INTELDONE:      LDA     CRCCHECK       ; Test if everything is OK
+INTELDONE:      LDA     z:CRCCHECK       ; Test if everything is OK
                 BEQ     OKMESS         ; Show OK message
                 LDA     #MYCR
                 JSR     ECHO           
                 LDA     #<MSG4         ; Load Error Message
-                STA     MSGL
+                STA     z:MSGL
                 LDA     #>MSG4
-                STA     MSGH
+                STA     z:MSGH
                 JSR     SHWMSG         ;Show Error
                 LDA     #MYCR
                 JSR     ECHO          
@@ -6136,9 +6175,9 @@ INTELDONE:      LDA     CRCCHECK       ; Test if everything is OK
 OKMESS:         LDA     #MYCR
                 JSR     ECHO           
                 LDA     #<MSG3         ;Load OK Message
-                STA     MSGL
+                STA     z:MSGL
                 LDA     #>MSG3
-                STA     MSGH
+                STA     z:MSGH
                 JSR     SHWMSG         ;Show Done
                 LDA     #MYCR
                 JSR     ECHO           
@@ -6153,7 +6192,7 @@ DONEFIRST:      ASL
                 ASL
                 ASL
                 ASL
-                STA     L
+                STA     z:L
                 INY
                 LDA     IN,Y           ;Get next char
                 EOR     #$30
@@ -6161,7 +6200,7 @@ DONEFIRST:      ASL
                 BCC     DONESECOND
                 ADC     #$08
 DONESECOND:     AND     #$0F
-                ORA     L
+                ORA     z:L
                 INY
                 RTS
 
