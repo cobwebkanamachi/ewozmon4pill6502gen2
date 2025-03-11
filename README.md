@@ -77,5 +77,7 @@ A simple demo of helloworld and assembly source, binary listing(paste to ewoz se
 line delimitter is LF, and above helloworld intel hex.
 changes of my debugging source files are after fixed i will upload here(still debugging).
 </PRE>
+<PRE>goodies3 (test vector file for intel hex upload : o65020001.hex):
+address 0000 upload and exec this. L then 0000.002F or 0000R.
 <PRE>Sorry, no warranty.  
 Enjoy!</PRE>
