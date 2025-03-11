@@ -68,13 +68,14 @@ Please paste bellow to EWOZ.
 3000: A9 20 AA 20 06 E0  E8 8A C9 7F D0 F6 4C 00 FF
 then 3000 R</PRE>
 <img src="https://github.com/cobwebkanamachi/ewozmon4pill6502gen2/blob/main/works.png">
-
+<PRE>
 Goodies1 (helloworld.txt):
 A simple demo of helloworld and assembly source, binary listing(paste to ewoz serial console).
-
-goodies2 (test vector file for intel hex upload: 06502.hex):
+</PRE>
+<img src="https://github.com/cobwebkanamachi/ewozmon4pill6502gen2/blob/main/running-hw.png">
+<PRE>goodies2 (test vector file for intel hex upload: 06502.hex):
 line delimitter is LF, and above helloworld intel hex.
 changes of my debugging source files are after fixed i will upload here(still debugging).
-
+</PRE>
 <PRE>Sorry, no warranty.  
 Enjoy!</PRE>
