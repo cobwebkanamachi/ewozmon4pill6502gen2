@@ -6025,7 +6025,7 @@ Current file: osi_bas.s
 00DF94  1  6C A8 00     ACTRUN:         JMP     (XAML)         ;Run at current XAM index
 00DF97  1               
 00DF97  1  20 24 E0     LOADINT:        JSR     LOADINTEL      ;* Load the Intel code
-00DF9A  1  4C E1 DE                     JMP     SOFTRESET      ;* When returned from the program, reset EWOZ
+00DF9A  1  4C 0A DF                     JMP     GETLINE;SOFTRESET      ;* When returned from the program, reset EWOZ
 00DF9D  1               
 00DF9D  1  24 AF        NOESCAPE:       BIT     z:MODE           ;Test MODE byte.
 00DF9F  1  50 0D                        BVC     NOTSTOR        ;B6=0 for STOR, 1 for XAM and BLOCK XAM

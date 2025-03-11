@@ -5985,7 +5985,7 @@ MYRUN:            JSR     ACTRUN         ;* JSR to the Address we want to run
 ACTRUN:         JMP     (XAML)         ;Run at current XAM index
 
 LOADINT:        JSR     LOADINTEL      ;* Load the Intel code
-                JMP     SOFTRESET      ;* When returned from the program, reset EWOZ
+                JMP     GETLINE;SOFTRESET      ;* When returned from the program, reset EWOZ
 
 NOESCAPE:       BIT     z:MODE           ;Test MODE byte.
                 BVC     NOTSTOR        ;B6=0 for STOR, 1 for XAM and BLOCK XAM
