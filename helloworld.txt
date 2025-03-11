@@ -1,0 +1,60 @@
+#Helloworld assembly 6502( for this machine )
+\ is prompt of EWOZ.
+Demo:
+Welcome to Rob's EWOZ 1.0.
+
+\
+\1000: A9 10 85 21 A9 1C 85 20
+
+1000: 00
+\1008: 20 0C 10 60 A0 00 B1 20
+
+1008: 00
+\1010: C5 2E F0 07 20 06 E0 C8
+
+1010: 00
+\1018: 4C 0E 10 60 48 65 6C 6C
+
+1018: 00
+\1020: 6F 20 57 6F 72 6C 64 2E
+
+1020: 00
+\1000.102F
+
+1000: A9 10 85 21 A9 1C 85 20 20 0C 10 60 A0 00 B1 20
+1010: C5 2E F0 07 20 06 E0 C8 4C 0E 10 60 48 65 6C 6C
+1020: 6F 20 57 6F 72 6C 64 2E 00 00 00 00 00 00 00 00
+\1000R
+
+1000: A9Hello World.
+
+source code:
+PrintChar equ $E006
+.ORG $1000
+  Lda #>HelloWorld
+  Sta $21
+  Lda #<HelloWorld
+  Sta $20
+  Jsr PrintStr
+  rts
+PrintStr:
+  Ldy #0
+PrintStrAgain:
+  Lda ($20),y
+  Cmp $2E
+  Beq PrintStrDone
+  Jsr PrintChar
+  Iny
+  Jmp PrintStrAgain
+PrintStrDone:
+  Rts
+HelloWorld:
+  .byte "Hello World."
+
+binary assembled visual6502(https://www.masswerk.at/6502/assembler.html).
+1000: A9 10 85 21 A9 1C 85 20
+1008: 20 0C 10 60 A0 00 B1 20
+1010: C5 2E F0 07 20 06 E0 C8
+1018: 4C 0E 10 60 48 65 6C 6C
+1020: 6F 20 57 6F 72 6C 64 2E
+
