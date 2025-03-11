@@ -72,5 +72,9 @@ then 3000 R</PRE>
 Goodies1 (helloworld.txt):
 A simple demo of helloworld and assembly source, binary listing(paste to eqoz).
 
+goodies2 (test vector file for intel hex upload: 06502.hex):
+line delimitter is LF, and above helloworld intel hex.
+changes of my debugging source files are after fixed i will upload here(still debugging).
+
 <PRE>Sorry, no warranty.  
 Enjoy!</PRE>
