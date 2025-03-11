@@ -68,5 +68,9 @@ Please paste bellow to EWOZ.
 3000: A9 20 AA 20 06 E0  E8 8A C9 7F D0 F6 4C 00 FF
 then 3000 R</PRE>
 <img src="https://github.com/cobwebkanamachi/ewozmon4pill6502gen2/blob/main/works.png">
+
+Goodies1 (helloworld.txt):
+A simple demo of helloworld and assembly source, binary listing(paste to eqoz).
+
 <PRE>Sorry, no warranty.  
 Enjoy!</PRE>
