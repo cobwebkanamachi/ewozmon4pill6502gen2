@@ -70,7 +70,7 @@ then 3000 R</PRE>
 <img src="https://github.com/cobwebkanamachi/ewozmon4pill6502gen2/blob/main/works.png">
 
 Goodies1 (helloworld.txt):
-A simple demo of helloworld and assembly source, binary listing(paste to eqoz).
+A simple demo of helloworld and assembly source, binary listing(paste to ewoz serial console).
 
 goodies2 (test vector file for intel hex upload: 06502.hex):
 line delimitter is LF, and above helloworld intel hex.
